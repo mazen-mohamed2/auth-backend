@@ -5,7 +5,7 @@
   "scripts": {
     "start": "nest start",
     "start:dev": "nest start --watch",
-    "build": "nest build",
+  "build": "tsc -p tsconfig.build.json",
     "format": "prettier --write \"src/**/*.ts\"",
     "lint": "eslint \"{src,tests}/**/*.ts\" --fix",
     "test": "jest",

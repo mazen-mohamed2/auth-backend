@@ -1,4 +1,4 @@
-// netlify/functions/api.js  (CommonJS)
+'use strict';
 require('reflect-metadata');
 
 const express = require('express');
@@ -8,23 +8,21 @@ const serverless = require('serverless-http');
 const { NestFactory } = require('@nestjs/core');
 const { ExpressAdapter } = require('@nestjs/platform-express');
 const { ValidationPipe } = require('@nestjs/common');
-const { DocumentBuilder, SwaggerModule } = require('@nestjs/swagger');
 
-// Import the **compiled** app (CJS)
-const { AppModule } = require('../../dist/app.module');
+// 👇 import the compiled (CommonJS) file from dist
+const { AppModule } = require('../../dist/app.module.js');
 
-let cachedHandler : any;
+let cachedHandler;
 
 async function bootstrap() {
   const expressApp = express();
   const adapter = new ExpressAdapter(expressApp);
   const app = await NestFactory.create(AppModule, adapter, { bufferLogs: true });
 
-  // Security & cookies
   app.use(helmet());
   app.use(cookieParser());
 
-  // CORS (allow multiple origins via CORS_ORIGIN="a,b,c")
+  // CORS
   const origins = (process.env.CORS_ORIGIN || '')
     .split(',')
     .map(s => s.trim())
@@ -37,24 +35,18 @@ async function bootstrap() {
     allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
   });
 
-  // Validation (same as main.ts)
-  app.useGlobalPipes(new ValidationPipe({ whitelist: true, forbidNonWhitelisted: true, transform: true }));
-
-  // Optional Swagger at /.netlify/functions/api/docs
-  if (process.env.ENABLE_SWAGGER === 'true') {
-    const cfg = new DocumentBuilder().setTitle('Auth API').setVersion('1.0').addBearerAuth().build();
-    const doc = SwaggerModule.createDocument(app, cfg);
-    SwaggerModule.setup('/docs', app, doc);
-  }
+  app.useGlobalPipes(
+    new ValidationPipe({ whitelist: true, forbidNonWhitelisted: true, transform: true }),
+  );
 
   await app.init();
   return serverless(expressApp, { binary: ['*/*'] });
 }
 
-exports.handler = async (event:any, context:any) => {
-  // --- Fast CORS preflight ---
+exports.handler = async (event, context) => {
+  // --- Fast CORS preflight (fixes empty/blocked requests) ---
   if (event.httpMethod === 'OPTIONS') {
-    const origin = event.headers && event.headers.origin || '';
+    const origin = (event.headers && event.headers.origin) || '';
     const allowList = (process.env.CORS_ORIGIN || '')
       .split(',')
       .map(s => s.trim())
