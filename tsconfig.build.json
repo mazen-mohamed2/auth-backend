@@ -7,10 +7,6 @@
     "outDir": "./dist",
     "removeComments": true
   },
-  "exclude": [
-    "node_modules",
-    "test",
-    "dist",
-    "**/*spec.ts"
-  ]
+  "include": ["src/**/*.ts"],                       // ← only src
+  "exclude": ["node_modules", "test", "dist", "**/*.spec.ts", "netlify/**"]  // ← exclude functions
 }
