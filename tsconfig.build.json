@@ -3,6 +3,8 @@
   "compilerOptions": {
     "declaration": true,
     "declarationMap": true,
+        "module": "commonjs",                 // 👈 force CJS output
+
     "sourceMap": true,
     "outDir": "./dist",
     "removeComments": true
