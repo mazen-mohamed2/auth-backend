@@ -40,8 +40,10 @@ async function bootstrap() {
   );
 
   await app.init();
-  return serverless(expressApp, { binary: ['*/*'] });
-}
+return serverless(expressApp, {
+  binary: ['*/*'],
+  basePath: '/.netlify/functions/api',   // 👈 strip the Netlify function prefix
+});}
 
 exports.handler = async (event, context) => {
   // --- Fast CORS preflight (fixes empty/blocked requests) ---
