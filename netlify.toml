@@ -1,0 +1,10 @@
+[build]
+  base = "."                 # we're deploying from backend/ as the base directory (set in UI)
+  command = "npm ci && npm run build"  # builds the Nest app into dist/
+  publish = "public"         # optional; we'll create a placeholder file
+
+# OPTIONAL: if you want /api/* instead of /.netlify/functions/api/*
+[[redirects]]
+  from = "/api/*"
+  to = "/.netlify/functions/api/:splat"
+  status = 200
