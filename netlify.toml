@@ -1,10 +1,8 @@
 [build]
-  base = "backend"                         # ← important
-  command = "npm ci && npm run build"      # builds Nest to backend/dist
+  command = "npm ci && npm run build"
   publish = "public"
-  functions = "netlify/functions"          # resolves to backend/netlify/functions
+  functions = "netlify/functions"
 
-# optional: mount api at /api/*
 [[redirects]]
   from = "/api/*"
   to = "/.netlify/functions/api/:splat"
