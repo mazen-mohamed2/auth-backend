@@ -1,7 +1,7 @@
 import * as Joi from 'joi';
 
 export default () => ({
-  env: process.env.NODE_ENV || 'development',
+  env: process.env.NODE_ENV || 'production',
   port: parseInt(process.env.PORT ?? '4000', 10),
   database: {
     uri: process.env.MONGODB_URI || 'mongodb://localhost:27017/auth_fullstack',
